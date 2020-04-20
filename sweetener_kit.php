@@ -9,6 +9,7 @@
  */
 
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
@@ -42,6 +43,12 @@ class plgJshoppingSweetener_Kit extends CMSPlugin
 	protected $load_jquery_chosen_admin;
 
 	/**
+	 * @var    boolean
+	 * @since  1.0.0
+	 */
+	protected $show_prods_from_subcategories;
+
+	/**
 	 * @param $subject
 	 * @param $config
 	 *
@@ -51,8 +58,9 @@ class plgJshoppingSweetener_Kit extends CMSPlugin
 	{
 		parent::__construct($subject, $config);
 
-		$this->JSConfig                 = JSFactory::getConfig();
-		$this->load_jquery_chosen_admin = ($this->params->get('load_jquery_chosen_admin', 1)) ? true : false;
+		$this->JSConfig                      = JSFactory::getConfig();
+		$this->load_jquery_chosen_admin      = ($this->params->get('load_jquery_chosen_admin', 1)) ? true : false;
+		$this->show_prods_from_subcategories = ($this->params->get('show_prods_from_subcategories', 1)) ? true : false;
 	}
 
 	/**
@@ -68,6 +76,59 @@ class plgJshoppingSweetener_Kit extends CMSPlugin
 			if ($this->load_jquery_chosen_admin)
 			{
 				HTMLHelper::_('formbehavior.chosen', 'select');
+			}
+		}
+	}
+
+	/**
+	 * @param   string  $model
+	 * @param   string  $adv_result
+	 * @param   string  $adv_from
+	 * @param   string  $adv_query
+	 * @param   string  $order_query
+	 * @param   string  $filters
+	 *
+	 *
+	 * @since 1.0.0
+	 */
+	public function onBeforeQueryGetProductList($model, &$adv_result, &$adv_from, &$adv_query, &$order_query, &$filters)
+	{
+		if ($this->app->isClient('site') && $this->app->input->getCmd('option') == 'com_jshopping')
+		{
+			if ($model == 'category')
+			{
+				// Show products from subcategories
+				if ($this->show_prods_from_subcategories)
+				{
+					$db    = Factory::getDbo();
+					$query = $db->getQuery(true);
+
+					$query->select($db->quoteName(['category_id', 'category_parent_id', 'ordering', 'category_publish']))
+						->from($db->quoteName('#__jshopping_categories'))
+						->where($db->quoteName('category_publish') . '=' . 1)
+						->order($db->quoteName('category_parent_id') . ' ASC');
+
+					$db->setQuery($query);
+					$categories = $db->loadObjectList();
+
+					$parentCategoryId     = $this->app->input->getCmd('category_id', 0);
+					$selectFromCategories = [$parentCategoryId];
+
+					if (!empty($categories))
+					{
+						foreach ($categories as $category)
+						{
+							if (in_array($category->category_parent_id, $selectFromCategories))
+							{
+								$selectFromCategories[] = $category->category_id;
+								$adv_query              .= ' OR ' . $db->quoteName('pr_cat.category_id') . ' = ' . $db->quote($category->category_id);
+							}
+						}
+					}
+
+					$adv_result  = 'DISTINCT ' . $adv_result;
+					$order_query = 'GROUP BY prod.product_id ' . $order_query;
+				}
 			}
 		}
 	}
