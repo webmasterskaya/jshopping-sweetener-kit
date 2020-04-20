@@ -40,11 +40,6 @@
             </fieldset>
         </fields>
     </config>
-    <media destination="plg_jshopping_sweetener_kit" folder="media">
-        <folder>css</folder>
-        <folder>js</folder>
-        <folder>images</folder>
-    </media>
     <updateservers>
         <server type="extension" priority="1" name="jshopping-sweetener-kit">
             https://site.com/update?extension=plg_jshopping_sweetener_kit
