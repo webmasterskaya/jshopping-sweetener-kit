@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.9" type="plugin" group="jshopping" method="upgrade">
+    <name>PLG_JSHOPPING_SWETEENER_KIT</name>
+    <author>Artem Vasilev - Webmasterskaya</author>
+    <creationDate>01.04.2020</creationDate>
+    <copyright>Copyright (C) 2020 Webmasterskaya. All rights reserved.</copyright>
+    <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
+    <authorEmail>dev@webmasterskaya.xyz</authorEmail>
+    <authorUrl>https://webmasterskaya.xyz</authorUrl>
+    <version>__DEPLOYMENT_VERSION__</version>
+    <description>PLG_JSHOPPING_SWETEENER_KIT_DESCRIPTION</description>
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.plg_jshopping_sweteener_kit.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_jshopping_sweteener_kit.sys.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.plg_jshopping_sweteener_kit.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.plg_jshopping_sweteener_kit.sys.ini</language>
+    </languages>
+    <files>
+        <filename plugin="SWETEENER_kit">sweteener_kit.php</filename>
+    </files>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+            </fieldset>
+        </fields>
+    </config>
+    <media destination="plg_jshopping_sweteener_kit" folder="media">
+        <folder>css</folder>
+        <folder>js</folder>
+        <folder>images</folder>
+    </media>
+    <updateservers>
+        <server type="extension" priority="1" name="jshopping-sweteener-kit">
+            https://site.com/update?extension=plg_jshopping_sweteener_kit
+        </server>
+    </updateservers>
+</extension>
