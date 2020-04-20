@@ -11,7 +11,6 @@
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 
 defined('_JEXEC') or die;
